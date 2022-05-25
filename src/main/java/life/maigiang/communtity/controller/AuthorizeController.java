@@ -12,8 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -40,7 +42,8 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
                            Model model,
-                           HttpServletRequest request){
+                           HttpServletRequest request,
+                           HttpServletResponse response){
         System.out.println("拿到的code："+code);
         //下面中，state是我自己添加进的，可忽略
         AssessTokenDOT assessTokenDOT = new AssessTokenDOT();
@@ -56,18 +59,20 @@ public class AuthorizeController {
         model.addAttribute("giteeUser1",giteeUser);
         if(giteeUser != null){
             //获取到的数据存入，MySQL数据库：community2
+            String token = UUID.randomUUID().toString();
             User user = new User();
             user.setName(giteeUser.getName());
             user.setAccountId(String.valueOf(giteeUser.getId()));
-            user.setToken(UUID.randomUUID().toString());//直接从缓存中拿
+            user.setToken(token);//生成一个新的token，保存数据库中
             user.setGmtCreate(System.currentTimeMillis());//系统当前时间，精确到毫秒数
             user.setGmtModified(user.getGmtCreate());//获取上面设置好的时间，先用着
             userMapper.UserInsert(user);
             //登录成功，写cookie 和 Session;将数据写入cookie中即Session中；（我们手工保存进去，不手工保存浏览器也会自动保存，只是名称随机生成，不好辨别）
-            request.getSession().setAttribute("giteeUser",giteeUser);
+            //request.getSession().setAttribute("giteeUser",giteeUser);//但是这个在cooki上看不到giteeUser，需要使用response
+            response.addCookie(new Cookie("token",token));
             return "redirect:/";//重定向,即重新定向到某一个方法，执行这个方法。这里/代表重定向到IndexController控制器的方法里去
         }else {
-            //登录失败，重新登录
+            //登录失败，重新登录publish
             return "redirect:/";
         }
     }

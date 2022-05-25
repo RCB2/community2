@@ -1,0 +1,17 @@
+.main{
+    /*top rigth bomtom left  上右下左*/
+    margin: 33px 175px 0px 175px;
+}
+.nav{
+    background-color: #e1e1e1;
+}
+
+/*主体部分，设置为白色的背景*/
+.mast{
+    background: #ffffff;
+}
+
+/*主体，用竖线条，分割主体*/
+.mast2{
+    border-right: #b9def0 solid 1px;
+}

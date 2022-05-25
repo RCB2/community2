@@ -28,15 +28,15 @@
           </div>
           <button type="submit" class="btn btn-default">搜索</button>
         </form>
-        <ul th:if="${session.giteeUser}==null" class="nav navbar-nav navbar-right">
+        <ul th:if="${session.user}==null" class="nav navbar-nav navbar-right">
           <li>
             <a href="https://gitee.com/oauth/authorize?client_id=bd8661a1497bd067145cb665aab60ee991dff92c5f15491649b6407b7acb8f1b&redirect_uri=http://localhost:8080/callback&response_type=code">登录gitee,授权</a>
           </li>
         </ul>
-        <ul th:if="${session.giteeUser}!=null" class="nav navbar-nav navbar-right">
+        <ul th:if="${session.user}!=null" class="nav navbar-nav navbar-right">
           <li class="dropdown" >
               <a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                <i th:text="${session.giteeUser.name}"/>
+                <i th:text="${session.user.name}"/>
                 <span class="caret" ></span>
               </a>
             <!--获取的头像-->
